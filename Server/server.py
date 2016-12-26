@@ -41,7 +41,9 @@ def on_new_client(clientsocket):
             else:
                 print addr, '>>', msg
             logged_in[client_socket] = client_socket
-        elif (computers[clientsocket] is not None) and (clients_computers[computers[clientsocket]] is not None): # clients_computers[computers[clientsocket]] < That's pointing to the barcode
+        elif (computers[clientsocket] is not None):
+            if (clients_computers[computers[clientsocket]] is None): # clients_computers[computers[clientsocket]] < That's pointing to the barcode
+                return
             clientsocket.send('201') # Asking for the Identification
             msg = clientsocket.recv(1024)
             client = clients_computers[clientsocket]
@@ -49,7 +51,15 @@ def on_new_client(clientsocket):
             clients_computers[computers[clientsocket]] = None
         else:
             msg = clientsocket.recv(1024)
-            print addr, '>>', msg
+            if '101' is in msg:
+                print addr, '>>', 'Wants to get information for computer'
+                clientsocket.send('200')
+                msg = clientsocket.recv(1024)
+                print addr, '>>', msg
+                clients_computers[msg] = clientsocket
+                print addr, '>>', 'Waiting for information from:', msg
+            else:
+                print addr, '>>', msg
     logged_in[client_socket] = None
     clientsocket.close()
 
