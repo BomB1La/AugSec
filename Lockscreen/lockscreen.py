@@ -31,10 +31,7 @@ def generate_barcode():
 
 
 def get_mac():
-  address = uuid.getnode()
-  h = iter(hex(address)[2:].zfill(12))
-  mac = ":".join(i + next(h) for i in h)
-  return mac
+  return ':'.join(['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,8*6,8)][::-1])
 
 
 # When i will be able to control mouse nad keyboard i will use this initializion function
