@@ -21,9 +21,13 @@ def initialize():
 
 
 def initialize_connection():
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((SERVER_HOST, SERVER_PORT))
-    client.close()
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect((SERVER_HOST, SERVER_PORT))
+        client.close()
+    except:
+        print 'Couldn\'t connect to the server'
+        print 'Initializing gui to work without network'
 
 
 # When i will be able to control mouse nad keyboard i will use this initializion function
