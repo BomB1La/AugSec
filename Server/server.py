@@ -32,7 +32,7 @@ def on_new_client(clientsocket):
     while True:
         if (loggend_in[clientsocket] is None):
             msg = clientsocket.recv(1024)
-            if '100' is in msg:
+            if '100' in msg:
                 print addr, '>>', 'Lockscreen connected'
                 clientsocket.send('200')
                 msg = clientsocket.recv(1024)
@@ -51,7 +51,7 @@ def on_new_client(clientsocket):
             clients_computers[computers[clientsocket]] = None
         else:
             msg = clientsocket.recv(1024)
-            if '101' is in msg:
+            if '101' in msg:
                 print addr, '>>', 'Wants to get information for computer'
                 clientsocket.send('200')
                 msg = clientsocket.recv(1024)
