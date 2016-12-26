@@ -1,37 +1,29 @@
-# import pyHook
 from sys import platform
-import uuid
-import qrcode, pynput
+import socket, uuid, qrcode
 
 STATUS = 'locked'
 QRCODE = ''
 
-SERVER_HOST = '207.232.21.254' # My own VPS that the server will run in for tests
-SERVER_PORT = '8090'
+SERVER_HOST = 'localhost'
+SERVER_PORT = 8090
 
 
 def main():
     print '-----------------'
-    print 'AugSecurity 2017'
+    print 'AugSecurity 2017 Lockscreen'
     print '-----------------'
     initialize()
 
 
 def initialize():
     generate_barcode()
+    initialize_connection()
 
 
-def generate_barcode():
-    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=100, border=5)
-    qr.add_data(get_mac())
-    qr.make(fit=True)
-
-    img = qr.make_image()
-    img.save('qrcode.png')
-
-
-def get_mac():
-  return ':'.join(['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,8*6,8)][::-1])
+def initialize_connection():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((SERVER_HOST, SERVER_PORT))
+    client.close()
 
 
 # When i will be able to control mouse nad keyboard i will use this initializion function
@@ -45,6 +37,8 @@ def initialize_controllers():
 
 
 def initialize_linux():
+    import pynput
+
     print 'Initializing for linux computer'
     with pynput.mouse.Listener(on_move=on_move,	on_click=on_click, on_scroll=on_scroll) as mouse_listener:
         mouse_listener.join()
@@ -52,14 +46,16 @@ def initialize_linux():
         keyboard_listener.join()
     
 
+# < For Windows > If will be added
 def initilize_windows():
+    import pyHook
+
     print 'Initializing for windows computer'
-    # < For Windows > If will be added  
-    # hm = pyHook.HookManager()
-    # hm.MouseAll = mouse_keyboard_event
-    # hm.KeyAll = mouse_keyboard_event
-    # hm.HookMouse()
-    # hm.HookKeyboard()
+    hm = pyHook.HookManager()
+    hm.MouseAll = mouse_keyboard_event
+    hm.KeyAll = mouse_keyboard_event
+    hm.HookMouse()
+    hm.HookKeyboard()
 
 
 # Mouse listener functions:
@@ -86,6 +82,19 @@ def on_release(key):
     if key == Key.esc:
         # Stop listener
         return False
+
+
+def generate_barcode():
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=100, border=5)
+    qr.add_data(get_mac())
+    qr.make(fit=True)
+    img = qr.make_image()
+
+    img.save('qrcode.png') # That line is used to save the qrcode direclty to the computer (we are not going to do it on the project) we are going to display it on our gui
+
+
+def get_mac():
+  return ':'.join(['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,8*6,8)][::-1])
 
 
 if __name__ == '__main__':
