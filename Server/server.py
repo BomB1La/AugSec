@@ -1,8 +1,17 @@
 import socket, sys, thread
 
+# Communication Protocol
+class Protocol:
+    OK = '200'
+    LOCKSCREEN_CONNECTION = '100'
+    ASK_FOR_ID = '201'
+    GET_INFO = '101'
+
+
 logged_in = []
 computers = {}
 clients_computers = {}
+
 
 def main():
     print '-----------------'
@@ -32,9 +41,9 @@ def on_new_client(clientsocket):
     while True:
         if (loggend_in[clientsocket] is None):
             msg = clientsocket.recv(1024)
-            if '100' in msg:
+            if Protocol().LOCKSCREEN_CONNECTION in msg:
                 print addr, '>>', 'Lockscreen connected'
-                clientsocket.send('200')
+                clientsocket.send(Protocol().OK)
                 msg = clientsocket.recv(1024)
                 print addr, '>>', msg
                 computers[clientsocket] = msg
@@ -44,24 +53,24 @@ def on_new_client(clientsocket):
         elif (computers[clientsocket] is not None):
             if (clients_computers[computers[clientsocket]] is None): # clients_computers[computers[clientsocket]] < That's pointing to the barcode
                 return
-            clientsocket.send('201') # Asking for the Identification
+            clientsocket.send(Protocol().ASK_FOR_ID) # Asking for the Identification
             msg = clientsocket.recv(1024)
             client = clients_computers[clientsocket]
             client.send(msg)
             clients_computers[computers[clientsocket]] = None
         else:
             msg = clientsocket.recv(1024)
-            if '101' in msg:
+            if Protocol().GET_INFO in msg:
                 print addr, '>>', 'Wants to get information for computer'
-                clientsocket.send('200')
-                msg = clientsocket.recv(1024)
+                clientsocket.send(Protocol().OK)
+                msg = clientsocket.recv(1024) # Getting the computer MAC_ADDRESS <- QRCODE
                 print addr, '>>', msg
                 clients_computers[msg] = clientsocket
                 print addr, '>>', 'Waiting for information from:', msg
             else:
                 print addr, '>>', msg
     logged_in[client_socket] = None
-    clientsocket.close()
+    clientsocket.close()    
 
 
 if __name__ == '__main__':
