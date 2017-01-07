@@ -1,5 +1,5 @@
 from sys import platform
-import socket, uuid, qrcode
+import thread, socket, uuid, qrcode
 
 STATUS = 'locked'
 QRCODE = ''
@@ -18,6 +18,7 @@ def main():
 def initialize():
     generate_barcode()
     initialize_connection()
+    initialize_controllers()
 
 
 def initialize_connection():
@@ -41,15 +42,12 @@ def initialize_controllers():
 
 
 def initialize_linux():
-    import pynput
-
     print 'Initializing for linux computer'
-    with pynput.mouse.Listener(on_move=on_move,	on_click=on_click, on_scroll=on_scroll) as mouse_listener:
-        mouse_listener.join()
-    with pynput.keyboard.Listener(on_press=on_press,on_release=on_release) as keyboard_listener:
-        keyboard_listener.join()
-    
+    # Uncomment those lines only after implementing the socket connection between the server and the lockscreen
+    # linux_handle_keyboard()
+    # linux_handle_mouse()
 
+    
 # < For Windows > If will be added
 def initilize_windows():
     import pyHook
@@ -60,7 +58,31 @@ def initilize_windows():
     hm.KeyAll = mouse_keyboard_event
     hm.HookMouse()
     hm.HookKeyboard()
+    
+# This function disables the input from the mouse all the time that the lockscreen is LOCKED
+def linux_handle_mouse():
+    from pynput.mouse import Button, Controller
+    mouse = Controller()
+    while STATUS == 'locked':
+        mouse.position = (0, 0)
+        mouse.release(Button.left)
+        mouse.release(Button.right)
 
+# This function disables the input from the keyboard all the time that the lockscreen is LOCKED
+def linux_handle_keyboard():
+    from pynput.keyboard import Key, Controller
+    keyboard = Controller()
+    while STATUS == 'locked':
+        keyboard.release(Key.ctrl)
+        keyboard.release(Key.alt)
+        keyboard.release(Key.escape)
+
+
+def linux_input_listeners():
+    with pynput.mouse.Listener(on_move=on_move,	on_click=on_click, on_scroll=on_scroll) as mouse_listener:
+        mouse_listener.join()
+    with pynput.keyboard.Listener(on_press=on_press,on_release=on_release) as keyboard_listener:
+        keyboard_listener.join()    
 
 # Mouse listener functions:
 def on_move(x, y):
