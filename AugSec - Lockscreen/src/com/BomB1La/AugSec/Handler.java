@@ -54,6 +54,18 @@ public class Handler implements Runnable {
 		robot.keyRelease(KeyEvent.VK_ALT);
 		robot.keyRelease(KeyEvent.VK_TAB);
 		robot.keyRelease(KeyEvent.VK_SHIFT);
+		robot.keyRelease(KeyEvent.VK_F1);
+		robot.keyRelease(KeyEvent.VK_F2);
+		robot.keyRelease(KeyEvent.VK_F3);
+		robot.keyRelease(KeyEvent.VK_F4);
+		robot.keyRelease(KeyEvent.VK_F5);
+		robot.keyRelease(KeyEvent.VK_F6);
+		robot.keyRelease(KeyEvent.VK_F7);
+		robot.keyRelease(KeyEvent.VK_F8);
+		robot.keyRelease(KeyEvent.VK_F9);
+		robot.keyRelease(KeyEvent.VK_F10);
+		robot.keyRelease(KeyEvent.VK_F11);
+		robot.keyRelease(KeyEvent.VK_F12);
 		// robot.mouseMove(0, 0); // Re Enable this line only after the Network Manager will work
 	}
 
