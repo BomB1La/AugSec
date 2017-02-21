@@ -2,45 +2,33 @@ package com.BomB1La.AugSec;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Gui extends JFrame implements ActionListener {
+public class Gui extends JFrame implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnLock = new JButton(new ImageIcon(Main.class.getResource("/computer-secure.png")));
-	private JLabel lblStatus = new JLabel("Status");
 
 	public Gui() {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int dWidth = gd.getDisplayMode().getWidth(), dHeight = gd.getDisplayMode().getHeight();
 
-		ImageIcon qr_icon = new ImageIcon(Main.settings.generateQrCode(Main.settings.getMacAddress(), 256, 256));
-		// ImageIcon lock_icon = new ImageIcon("res/computer-secure.png");
+		JLabel qrcode = new JLabel(new ImageIcon(Main.settings.generateQrCode(Main.settings.getMacAddress(), 256, 256)));
 
 		setTitle("AugSec 2017");
 		setSize(dWidth, dHeight);
 
-		for (int x = 0; x < 2; x++) {
-			for (int y = 0; y < 2; y++) {
-				JLabel qrcode = new JLabel(qr_icon);
-				qrcode.setBounds(x == 0 ? 0 : dWidth - 256, y == 0 ? 0 : dHeight - 256, 256, 256);
-				add(qrcode);
-			}
-		}
+		qrcode.setBounds((dWidth / 2) - (289 / 2) + 5, (dHeight / 2) - (289 / 2) + 109, 289, 289);
 
-		btnLock.setBounds((dWidth / 2) - (256 / 2), (dHeight / 2) - (256 / 2), 256, 256);
-		lblStatus.setBounds(dWidth / 2, dHeight / 2, 220, 50);
+		qrcode.addMouseListener(this);
 
-		btnLock.addActionListener(this);
+		setContentPane(new JLabel(new ImageIcon(Main.class.getResource("/background.jpg"))));
 
-		add(btnLock);
-		add(lblStatus);
+		add(qrcode);
 
 		setAlwaysOnTop(true);
 		setAutoRequestFocus(true);
@@ -53,12 +41,33 @@ public class Gui extends JFrame implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent event) {
+	public void mouseClicked(MouseEvent arg0) {
 		Main.handler.setLock(!Main.handler.getLock());
 		dispose();
 	}
 
-	public void setStatus(String status) {
-		this.lblStatus.setText(status);
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
 	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

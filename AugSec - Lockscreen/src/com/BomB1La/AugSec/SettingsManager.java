@@ -1,5 +1,6 @@
 package com.BomB1La.AugSec;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.NetworkInterface;
@@ -44,13 +45,11 @@ public class SettingsManager {
 	public Image generateQrCode(String content, int width, int height) {
 		QRCodeWriter writer = new QRCodeWriter();
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		int white = 255 << 16 | 255 << 8 | 255;
-		int black = 0;
 		try {
 			BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height);
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
-					image.setRGB(i, j, bitMatrix.get(i, j) ? black : white);
+					image.setRGB(i, j, bitMatrix.get(i, j) ? Color.black.getRGB() : Color.white.getRGB());
 				}
 			}
 

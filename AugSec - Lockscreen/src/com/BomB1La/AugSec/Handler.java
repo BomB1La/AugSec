@@ -66,6 +66,7 @@ public class Handler implements Runnable {
 		robot.keyRelease(KeyEvent.VK_F10);
 		robot.keyRelease(KeyEvent.VK_F11);
 		robot.keyRelease(KeyEvent.VK_F12);
+		robot.keyRelease(KeyEvent.VK_F12);
 		// robot.mouseMove(0, 0); // Re Enable this line only after the Network Manager will work
 	}
 
@@ -85,7 +86,7 @@ public class Handler implements Runnable {
 				rt.exec("kill -9 " + task);
 			}
 		} catch (Exception e) {
-			this.gui.setStatus(e.getMessage());
+
 		}
 	}
 
