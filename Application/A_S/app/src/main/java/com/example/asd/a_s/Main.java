@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +41,9 @@ public class Main extends AppCompatActivity {
         final EditText ip_snd = (EditText)findViewById(R.id.IP_ToSnd);
         final Button GO_butt = (Button)findViewById(R.id.GO);
         final Button QR_butt = (Button)findViewById(R.id.QR);
+        final Button TD_butt = (Button)findViewById(R.id.TD);
+
+
         final TextView out_put = (TextView)findViewById(R.id.txtV);
         final Activity activity = this;
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -83,6 +87,15 @@ public class Main extends AppCompatActivity {
                 integrator.initiateScan();
             }
         });
+
+        // when we tap the QR button
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.global, menu);
+        return true;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

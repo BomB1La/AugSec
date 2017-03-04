@@ -71,15 +71,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="7dp" />
 
-    <Button
-        android:text="QR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/GO"
-        android:layout_alignParentStart="true"
-        android:id="@+id/QR"
-        tools:ignore="HardcodedText" />
-
     <TextView
         android:text="Output"
         android:layout_width="wrap_content"
@@ -89,5 +80,23 @@
         tools:ignore="HardcodedText"
         android:layout_below="@+id/IP_ToSnd"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="QR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/QR"
+        tools:ignore="HardcodedText"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="3D"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TD"
+        tools:ignore="HardcodedText"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
