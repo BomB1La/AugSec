@@ -52,7 +52,6 @@ public class SettingsManager {
 					image.setRGB(i, j, bitMatrix.get(i, j) ? Color.black.getRGB() : Color.white.getRGB());
 				}
 			}
-
 			return ((Image) image);
 		} catch (Exception e) {
 
