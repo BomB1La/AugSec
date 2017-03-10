@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.media.audiofx.BassBoost;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -66,23 +67,32 @@ public class LoginActivity extends AppCompatActivity{
         mUsername.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mUsername.getText().toString();
+        String username = mUsername.getText().toString();
         String ip_send = "192.168.0.1";
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(username)) {
             mUsername.setError(getString(R.string.error_field_required));
-            focusView = mUsername;
-            cancel = true;
+            mUsername.requestFocus();
+            // cancel = true;
+            return;
         }
 
-        if (cancel) {
+        SettingsManager.getInstance().setUsername(username);
+        
+        showProgress(true);
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
+
+        /*if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
+
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
@@ -99,14 +109,12 @@ public class LoginActivity extends AppCompatActivity{
                     out.println(asd.getMessage());
                 }
             }
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
-        }
-   //Kill the activity from which you will go to next activity
+
+        }*/
+        //Kill the activity from which you will go to next activity
     }
     /**
      * Shows the progress UI and hides the login form.
