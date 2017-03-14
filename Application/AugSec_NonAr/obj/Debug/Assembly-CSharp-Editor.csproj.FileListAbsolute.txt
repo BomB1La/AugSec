@@ -1,0 +1,1 @@
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly-CSharp-Editor.csprojResolveAssemblyReference.cache

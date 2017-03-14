@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Adder.cs" />
      <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDestroy.cs" />
      <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDragLine.cs" />
      <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDragTrail.cs" />
