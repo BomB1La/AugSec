@@ -6,10 +6,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FFEC614A-991D-B06A-B73D-FB12716FAB2D}</ProjectGuid>
+    <ProjectGuid>{FAF34975-EC29-93C0-DCA4-C569F6012B2F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>Assets</BaseDirectory>
@@ -46,45 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDestroy.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDragLine.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanDragTrail.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanFingerDown.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanFingerTap.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanFingerUp.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanMultiTap.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanMultiTapInfo.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanOpenUrl.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanPan.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanPanSmooth.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanPressSelect.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanRotate.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanScale.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelect.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectable.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectableBehaviour.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectableRendererColor.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectableSpriteRendererColor.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectableTranslateInertia2D.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSelectableTranslateInertia3D.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSpawnGameObject.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeDirection4.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeDirection8.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeRigidbody2D.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeRigidbody2DNoRelease.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeRigidbody3D.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanSwipeRigidbody3DNoRelease.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanTapSelect.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanTouchEvents.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanTranslate.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanTranslateSmooth.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanZoomCamera.cs" />
-     <Compile Include="Assets\LeanTouch\Examples\Scripts\LeanZoomCameraSmooth.cs" />
-     <Compile Include="Assets\LeanTouch\Scripts\LeanFinger.cs" />
-     <Compile Include="Assets\LeanTouch\Scripts\LeanGesture.cs" />
-     <Compile Include="Assets\LeanTouch\Scripts\LeanSnapshot.cs" />
-     <Compile Include="Assets\LeanTouch\Scripts\LeanTouch.cs" />
-     <Compile Include="Assets\MainS.cs" />
+     <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <None Include="Assets\LeanTouch\Examples\Fonts\OFL.txt" />
      <None Include="Assets\LeanTouch\Examples\Shaders\BackgroundSkybox.shader" />
      <None Include="Assets\LeanTouch\Examples\Shaders\Smooth.shader" />

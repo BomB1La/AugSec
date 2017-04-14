@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else if (id == R.id.sign_off) {
-            net.send("990");
+            net.send("980");
         } else if (id == R.id.off_pc) {
-
+            net.send("990");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -9,16 +9,12 @@ public class NetworkManager implements Runnable {
 
     private static NetworkManager instance = new NetworkManager();
 
-    private String HOST = "localhost";
-    private int PORT = 8080;
+    private static final String HOST = "localhost";
+    private static final int PORT = 8080;
 
-    private Socket socket;
-    private PrintWriter writer;
-    private BufferedReader reader;
-
-    public NetworkManager() {
-        // Read Settings from file (HOST, PORT NUMBER)
-    }
+    private static Socket socket = null;
+    private static PrintWriter writer = null;
+    private static BufferedReader reader = null;
 
     public void setup() {
         try {
@@ -43,44 +39,28 @@ public class NetworkManager implements Runnable {
         }
     }
 
-    public void handle(String str) {
-        if (str.startsWith("101")) { //ok (PC IS NOW ACTIVE)
+    private void handle(String str) {
+        if (str.startsWith("101")) {
 
-        } else if (str.startsWith("102")) { // denied
+        } else if (str.startsWith("111")) {
 
-        } else if (str.startsWith("103")) { //  error/incorrect
+        } else if (str.startsWith("121")) {
 
-        } else if (str.startsWith("111")) { // REQUEST TO END A STREAM (TeamViewer)
+        } else if (str.startsWith("131")) {
 
-        } else if (str.startsWith("112")) { // Trying to connect
+        } else if (str.startsWith("141")) {
 
-        } else if (str.startsWith("121")) { // POWER OFF PC
+        } else if (str.startsWith("151")) {
 
-        } else if (str.startsWith("122")) { // CREATE LOGIN KEY
+        } else if (str.startsWith("153")) {
 
-        } else if (str.startsWith("131")) { // REQUEST TO START A STREAM (TeamViewer)
+        } else if (str.startsWith("981")) {
 
-        } else if (str.startsWith("132")) { // REQUEST TO END A STREAM (TeamViewer)
+        } else if (str.startsWith("102")) {
 
-        } else if (str.startsWith("141")) { // Trying to connect
+        } else if (str.startsWith("102")) {
 
-        } else if (str.startsWith("142")) { // POWER OFF PC
-
-        } else if (str.startsWith("151")) { // POWER OFF PC
-
-        } else if (str.startsWith("152")) { // POWER OFF PC
-
-        } else if (str.startsWith("153")) { // POWER OFF PC
-
-        } else if (str.startsWith("154")) { // POWER OFF PC
-
-        } else if (str.startsWith("991")) { // POWER OFF PC
-
-        } else if (str.startsWith("992")) { // POWER OFF PC
-
-        } else if (str.startsWith("400")) { // POWER OFF PC
-
-        } else if (str.startsWith("410")) { // POWER OFF PC
+        } else if (str.startsWith("102")) {
 
         }
     }
@@ -101,7 +81,7 @@ public class NetworkManager implements Runnable {
         return null;
     }
 
-    public boolean isConnected() {
+    private boolean isConnected() {
         return (socket != null) && socket.isConnected();
     }
 
