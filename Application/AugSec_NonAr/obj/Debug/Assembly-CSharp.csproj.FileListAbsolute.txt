@@ -27,3 +27,5 @@ C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Uni
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly-CSharp.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly-CSharp.pdb
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Vuforia.UnityExtensions.dll
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Vuforia.UnityExtensions.xml
