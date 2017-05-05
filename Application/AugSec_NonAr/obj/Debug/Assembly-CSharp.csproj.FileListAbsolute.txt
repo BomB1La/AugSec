@@ -5,7 +5,6 @@ C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Uni
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.HoloLens.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.Networking.dll
-C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.UI.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.VR.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Mono.Cecil.dll
@@ -20,7 +19,6 @@ C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Uni
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEditor.xml
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.UI.xml
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.Networking.xml
-C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.xml
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.Analytics.xml
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.HoloLens.xml
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.VR.xml
@@ -29,3 +27,7 @@ C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\obj\Debug\Assembly-CSharp.pdb
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Vuforia.UnityExtensions.dll
 C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\Vuforia.UnityExtensions.xml
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\nunit.framework.dll
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.TestRunner.dll
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\UnityEngine.TestRunner.xml
+C:\Users\asd\Documents\GitHub\AugSec\Application\AugSec_NonAr\Temp\bin\Debug\nunit.framework.xml
