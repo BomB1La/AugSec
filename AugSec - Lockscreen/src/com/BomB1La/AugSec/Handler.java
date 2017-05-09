@@ -44,6 +44,7 @@ public class Handler implements Runnable {
 				handleMouseAndKeyboard();
 			}
 			Runtime.getRuntime().exec("explorer.exe");
+			System.exit(0);
 		} catch (Exception e) {
 
 		}

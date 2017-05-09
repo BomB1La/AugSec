@@ -59,6 +59,16 @@ public class SettingsManager {
 		return ((Image) image);
 	}
 
+	public String getUsersFolder() {
+		String path = "";
+		if (getOS().toLowerCase().contains("windows")) {
+			path = System.getenv("APPDATA") + "\\AugSec\\";
+		} else { // Linux
+			path = "~\\.AugSec\\";
+		}
+		return path;
+	}
+
 	public static SettingsManager getInstance() {
 		return instance;
 	}
