@@ -1,4 +1,4 @@
-import socket, sys, thread
+import socket, sys, thread, time
 
 # Communication Protocol
 class Protocol:
@@ -8,7 +8,7 @@ class Protocol:
     GET_INFO = '101'
 
 
-logged_in = []
+logged_in = {}
 computers = {}
 clients_computers = {}
 
@@ -21,57 +21,81 @@ def main():
 
 
 def initialize():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = ('localhost', 8090)
-    print >> sys.stderr, 'starting up on %s port %s' % server_address
-    sock.bind(server_address)
-    listen(sock)
-    socket.close()
+
+    print 'starting up on %s port %s' % server_address
+    print '-----------------'
+
+    server_socket.bind(server_address)
+    listen(server_socket)
+    server_socket.close()
 
 
 def listen(sock):
+    print 'Listening for connections'
+    print '-----------------'
     sock.listen(9999999)
     while True:
-       c, addr = sock.accept()
-       thread.start_new_thread(on_new_client,(addr,))
+        c, csock = sock.accept()
+        print ''
+        print 'Got connection from', csock
+        print '-----------------'
+        thread.start_new_thread(on_new_client, (c, csock, sock))
 
 
-def on_new_client(clientsocket):
-    print 'Got connection from', clientsocket
+def on_new_client(conn, clientsocket, server_socket):
+    addr, cport = clientsocket
     while True:
-        if (loggend_in[clientsocket] is None):
-            msg = clientsocket.recv(1024)
+        if clientsocket not in logged_in:
+            send(conn, Protocol().ASK_FOR_ID)
+            msg = recv(conn, 1024)
             if Protocol().LOCKSCREEN_CONNECTION in msg:
-                print addr, '>>', 'Lockscreen connected'
-                clientsocket.send(Protocol().OK)
-                msg = clientsocket.recv(1024)
-                print addr, '>>', msg
-                computers[clientsocket] = msg
+                print clientsocket, '>>', 'Lockscreen connected'
+                send(conn, Protocol().OK)
+                msg = recv(conn, 1024)  # Reciving the MAC ADDRESS
+                print clientsocket, '>>', msg
+                computers[addr] = msg
             else:
-                print addr, '>>', msg
-            logged_in[client_socket] = client_socket
-        elif (computers[clientsocket] is not None):
-            if (clients_computers[computers[clientsocket]] is None): # clients_computers[computers[clientsocket]] < That's pointing to the barcode
+                print clientsocket, '>>', msg
+            logged_in[clientsocket] = True
+        elif computers[addr] is not None:
+            if computers[addr] not in clients_computers:  # That's pointing to the barcode
                 return
-            clientsocket.send(Protocol().ASK_FOR_ID) # Asking for the Identification
-            msg = clientsocket.recv(1024)
+            send(conn, Protocol().ASK_FOR_ID)  # Asking for the Identification
+            msg = recv(conn, 1024)
             client = clients_computers[clientsocket]
-            client.send(msg)
+
+            send(client, msg)
             clients_computers[computers[clientsocket]] = None
         else:
-            msg = clientsocket.recv(1024)
+            msg = recv(conn, 1024)
             if Protocol().GET_INFO in msg:
                 print addr, '>>', 'Wants to get information for computer'
-                clientsocket.send(Protocol().OK)
-                msg = clientsocket.recv(1024) # Getting the computer MAC_ADDRESS <- QRCODE
+                server_socket.sendto(Protocol().OK, addr)
+                msg = recv(conn, 1024)  # Getting the computer MAC_ADDRESS <- QRCODE
                 print addr, '>>', msg
                 clients_computers[msg] = clientsocket
                 print addr, '>>', 'Waiting for information from:', msg
             else:
                 print addr, '>>', msg
-    logged_in[client_socket] = None
-    clientsocket.close()    
 
+        msg = recv(conn, 1024)
+        if 'DISCONNECT' in msg:
+            break
+
+    logged_in[addr] = None
+    computers[addr] = None
+    print clientsocket, '>>', 'Disconnected'
+    conn.close()
+
+
+def send(conn, msg):
+    conn.send(msg + '\r')
+
+
+def recv(conn, bytes):
+    return str(conn.recv(bytes)).replace('\n', '').replace('\r', '')
 
 if __name__ == '__main__':
     main()
