@@ -10,9 +10,6 @@ public class SettingsManager {
     private String host = "localhost";
     private int port = 8080;
     private SettingsManager(){}
-    /*public void setup() {
-
-    }*/
 
     public void setUsername(String username){
         this.username = username;

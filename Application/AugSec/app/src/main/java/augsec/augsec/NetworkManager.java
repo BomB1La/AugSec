@@ -16,7 +16,7 @@ public class NetworkManager implements Runnable {
     private static PrintWriter writer = null;
     private static BufferedReader reader = null;
 
-    public void setup() {
+    public NetworkManager() {
         try {
             socket = new Socket(HOST, PORT);
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -26,10 +26,6 @@ public class NetworkManager implements Runnable {
             return;
         }
         new Thread(this).start();
-    }
-
-    @Override
-    public void run() {
         while (isConnected()) {
             String rec = receive();
             if (rec == null) {
@@ -37,6 +33,11 @@ public class NetworkManager implements Runnable {
             }
             handle(rec);
         }
+    }
+
+    @Override
+    public void run() {
+
     }
 
     private void handle(String str) {
@@ -55,10 +56,6 @@ public class NetworkManager implements Runnable {
         } else if (str.startsWith("153")) {
 
         } else if (str.startsWith("981")) {
-
-        } else if (str.startsWith("102")) {
-
-        } else if (str.startsWith("102")) {
 
         } else if (str.startsWith("102")) {
 

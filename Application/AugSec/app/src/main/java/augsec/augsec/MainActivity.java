@@ -1,6 +1,7 @@
 package augsec.augsec;
 
-import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,14 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import augsec.augsec.non_ar_files.NonArView;
+import java.io.File;
+import java.util.List;
+
 import butterknife.ButterKnife;
 
 
@@ -71,14 +73,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.c_key) {
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.augsec.AugSec_Key");
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+                checker c1 = new checker();
+                c1.start();
+            }
+            else{
 
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, NonArView.class);
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-
+            }
         } else if (id == R.id.s_stream) {
 
         } else if (id == R.id.settings) {
@@ -89,9 +92,7 @@ public class MainActivity extends AppCompatActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else if (id == R.id.sign_off) {
-            net.send("980");
         } else if (id == R.id.off_pc) {
-            net.send("990");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -104,9 +105,8 @@ public class MainActivity extends AppCompatActivity
 
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .setName("Main Page")
+                .setUrl(Uri.parse("https://www.google.com/"))
                 .build();
         return new Action.Builder(Action.TYPE_VIEW)
                 .setObject(object)
@@ -137,4 +137,47 @@ public class MainActivity extends AppCompatActivity
     public interface OnBackPressedListener {
         void doBack();
     }
+
+    class checker implements Runnable {
+        private Thread t;
+        checker() {}
+        public void run() {
+            try {
+                while(true){
+                    if(!isAppRunning(MainActivity.this, "com.augsec.AugSec_Key" ))
+                        break;
+                }
+                File main_file = new File("/storage/emulated/0/data/Um97");
+                if(main_file.exists()){
+
+                }
+                File opt_file = new File("/storage/emulated/0/data/Um197");
+                if(main_file.exists() && opt_file.exists()){
+
+                }
+            }catch (Exception e) {}
+        }
+
+        public void start () {
+            if (t == null) {
+                t = new Thread(this);
+                t.start();
+            }
+        }
+
+        boolean isAppRunning(final Context context, final String packageName) {
+            final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+            if (procInfos != null)
+            {
+                for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                    if (processInfo.processName.equals(packageName)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 }
+
