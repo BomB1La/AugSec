@@ -1,12 +1,10 @@
 package augsec.augsec;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -17,23 +15,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public  class LoginActivity extends AppCompatActivity {
     private EditText mUsername;
-    private View mProgressView;
-    private View mLoginFormView;
     private String username;
-    private NetworkManager managr = new NetworkManager();
-    private static final String TAG = "LoginActivity";
     public int REQUEST_PERMISSIONS = 0;
+    public static SettingsManager settings = SettingsManager.getInstance();
+    public static NetworkManager network = NetworkManager.getInstance();
 
 
     @Override
@@ -41,25 +41,50 @@ public  class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mUsername = (EditText) findViewById(R.id.username);
-        Button mUserSignUpButton = (Button) findViewById(R.id.sign_up_button);
+        Button mUserSignInButton = (Button) findViewById(R.id.sign_in_button );
+        mUserSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //attemptSignIn();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+        TextView mUserSignUpButton  = (TextView) findViewById(R.id.sign_up_button);
         mUserSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptSignUp();
             }
         });
-        Button mUserSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mUserSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptSignIn();
-            }
-        });
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-       requestAppPermissions();
+        requestAppPermissions();
+        network.setUp();
     }
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
 
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(String.format("%02X:",b));
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {}
+        return "02:00:00:00:00:00";
+    }
     private void attemptSignUp() {
         mUsername.setError(null);
         username = mUsername.getText().toString();
@@ -83,49 +108,55 @@ public  class LoginActivity extends AppCompatActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         try {
             Pattern p = Pattern.compile("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
             Matcher m = p.matcher(scanResult.getContents());
             if (scanResult != null && m.find()) {
-                SettingsManager.getInstance().setUsername(username);
-                showProgress(true);
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
+                network.send("301" + "/" + getMacAddr() + "/" + mUsername.getText().toString());
+                if(network.receive().startsWith("YYY")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("ERROR:\nSaid user is already made!" )
+                    .setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {}
+                    });
+                } else if(network.receive().startsWith("ZZZ")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("ERROR:\nThere is no said user!" )
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {}
+                    });
+                } else if(network.receive().startsWith("101")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Good to go:\nWould you like to make a key?" )
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {}
+                    });
+                }
+                //settings.setUsername(username);
+                //Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                //startActivity(i);
+                //finish();
+            } else if (getMacAddr() != "02:00:00:00:00:00"){
+                Toast toast = Toast.makeText(getApplicationContext(), getMacAddr() + "\nIs NOT our MAC address!", Toast.LENGTH_LONG);
+                toast.show();
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(), scanResult.getContents() + "\nIs NOT a mac address!", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), scanResult.getContents() + "\nIs NOT a MAC address!", Toast.LENGTH_LONG);
                 toast.show();
             }
         } catch (Exception ex) {
-            Toast toast = Toast.makeText(getApplicationContext(), "No barcode was found..", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "No MAC address was found..", Toast.LENGTH_LONG);
             toast.show();
         }
 

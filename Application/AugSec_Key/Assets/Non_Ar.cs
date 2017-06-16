@@ -228,9 +228,7 @@ public class Non_Ar : MonoBehaviour {
 	void returning(){ SceneManager.LoadScene("Menu"); }
 	void sending(){
 		string key_data = "";
-		var publicKey ="<RSAKeyValue><Modulus>iTb4cI7j6fMs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
-		var privateKey ="<RSAKeyValue><Modulus>nr6j0ZMs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
-		var rsa = new RSACryptoServiceProvider (1024);
+
 		for(int i =0; i < theBody.Count; i++){
 			key_data += ("$$$$$$$$$$") + "\n";
 			key_data += theBody [i].GetComponent<Renderer> ().material.color.ToString () + "\n";
@@ -239,17 +237,10 @@ public class Non_Ar : MonoBehaviour {
 		key_data += "$$$$$$$$$$" + "\n";
 
 
-		var binary_key = Encoding.ASCII.GetBytes(key_data);
-
-		rsa.FromXmlString(publicKey);
-		var encryptedData = rsa.Encrypt(binary_key, true);
-		var base64Encrypted = Convert.ToBase64String(encryptedData);
-
-
 
 		if (System.IO.File.Exists ("Um97.txt"))
 			System.IO.File.Delete ("Um97.txt");
-		System.IO.File.WriteAllBytes ("Um97.txt", encryptedData);
+		System.IO.File.WriteAllBytes ("Um97.txt");
 		Application.Quit ();
 	}
 	void refreshing(){ SceneManager.LoadScene("Non_Ar");}

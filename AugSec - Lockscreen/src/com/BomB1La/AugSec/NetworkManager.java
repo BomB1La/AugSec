@@ -35,8 +35,9 @@ public class NetworkManager implements Runnable {
 
 	@Override
 	public void run() {
+		String rec = null;
 		while (isConnected()) {
-			String rec = recive();
+			rec = recive();
 			if (rec == null) {
 				continue;
 			}
@@ -45,7 +46,17 @@ public class NetworkManager implements Runnable {
 	}
 
 	public void handle(String str) {
-		if (str.startsWith("401")) { // LOGIN KEY
+		System.out.println("Handling: " + str);
+		if (str.startsWith("201")) {
+			send("100"); // Lockscreen Connection
+
+			String rec = recive();
+			while (rec == null || !rec.equalsIgnoreCase("200")) {
+				rec = recive();
+			}
+
+			send(Main.settings.getMacAddress());
+		} else if (str.startsWith("401")) { // LOGIN KEY
 
 		} else if (str.startsWith("411")) { // CREATE LOGIN KEY
 
@@ -58,7 +69,7 @@ public class NetworkManager implements Runnable {
 		} else if (str.startsWith("990")) { // POWER OFF PC
 			Runtime runtime = Runtime.getRuntime();
 			try {
-				runtime.exec("shutdown -s -t 5");
+				runtime.exec("shutdown -t 5");
 				// Sending verfication
 			} catch (IOException e) {
 				// Sending ERROR
@@ -68,8 +79,13 @@ public class NetworkManager implements Runnable {
 		}
 	}
 
+	public void disconnect() {
+		send("DISCONNECT");
+	}
+
 	public void send(String msg) {
 		writer.println(msg);
+		System.out.println("Sending: " + msg);
 	}
 
 	public String recive() {
@@ -77,9 +93,11 @@ public class NetworkManager implements Runnable {
 			if (!reader.ready()) {
 				return null;
 			}
-			return reader.readLine();
+			String rec = reader.readLine();
+			System.out.println("Recived: " + rec);
+			return rec;
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return null;
 	}

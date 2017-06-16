@@ -44,6 +44,7 @@ public class Gui extends JFrame implements MouseListener {
 	public void mouseClicked(MouseEvent arg0) {
 		Main.handler.setLock(!Main.handler.getLock());
 		dispose();
+		
 	}
 
 	@Override
