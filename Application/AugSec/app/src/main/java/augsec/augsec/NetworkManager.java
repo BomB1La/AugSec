@@ -1,22 +1,45 @@
 package augsec.augsec;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
+
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
+/**
+ * Created by asd on 6/17/2017.
+ */
 
 public class NetworkManager implements Runnable {
-
     private static NetworkManager instance = new NetworkManager();
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 8080;
+    private String HOST = "localhost";
+    private int PORT = 8090;
+    private static final String TAG = "Test";
 
-    private static Socket socket = null;
-    private static PrintWriter writer = null;
-    private static BufferedReader reader = null;
+    private Socket socket;
+    private PrintWriter writer;
+    private BufferedReader reader;
 
-    public void setUp() {
+    public NetworkManager() {
+        // Read Settings from file (HOST, PORT NUMBER)
+    }
+
+    public void setup() {
+        Log.v(TAG,"setup");
+        if (isConnected()) {
+            return;
+        }
+        new Thread(this).start();
+    }
+
+    @Override
+    public void run() {
+        Log.v(TAG,"before try");
         try {
             socket = new Socket(HOST, PORT);
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -25,59 +48,47 @@ public class NetworkManager implements Runnable {
             e.printStackTrace();
             return;
         }
-        new Thread(this).start();
+        Log.v(TAG,"Network Manager is running"); //ok, good to go! run
+        //String rec = null;
+        //while (isConnected()) {
+        //    rec = recive();
+        //    if (rec == null) {
+        //        continue;
+        //    }
+        //    handle(rec);
+        //}
     }
 
-    @Override
-    public void run() {
-        while (isConnected()) {
-            String rec = receive();
-            if (rec == null) {
-                continue;
-            }
-            handle(rec);
-        }
-    }
+    //public void handle(String str) {
+       // if(str.startsWith("201")){
+        //    send("150"); // Client Connection
+        //}
+    //}
 
-    private void handle(String str) {
-        if (str.startsWith("101")) {
-
-        } else if (str.startsWith("111")) {
-
-        } else if (str.startsWith("121")) {
-
-        } else if (str.startsWith("131")) {
-
-        } else if (str.startsWith("141")) {
-
-        } else if (str.startsWith("151")) {
-
-        } else if (str.startsWith("153")) {
-
-        } else if (str.startsWith("981")) {
-
-        } else if (str.startsWith("102")) {
-
-        }
+    public void disconnect() {
+        send("DISCONNECT");
     }
 
     public void send(String msg) {
         writer.println(msg);
+        System.out.println("Sending: " + msg);
     }
 
-    public String receive() {
+    public String recive() {
         try {
             if (!reader.ready()) {
                 return null;
             }
-            return reader.readLine();
+            String rec = reader.readLine();
+            System.out.println("Recived: " + rec);
+            return rec;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }
 
-    private boolean isConnected() {
+    public boolean isConnected() {
         return (socket != null) && socket.isConnected();
     }
 

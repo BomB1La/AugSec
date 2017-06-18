@@ -13,7 +13,7 @@ public class SamplesTapHandler : MonoBehaviour
 {
 	#region PRIVATE_MEMBERS
 
-    private const float DOUBLE_TAP_MAX_DELAY = 0.5f;
+    private const float DOUBLE_TAP_MAX_DELAY = 0.2f;
     //seconds
     private float mTimeSinceLastTap = 0;
     private MenuAnimator mMenuAnim = null;

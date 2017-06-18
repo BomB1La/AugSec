@@ -16,7 +16,7 @@ public class NetworkManager implements Runnable {
 	private Socket socket;
 	private PrintWriter writer;
 	private BufferedReader reader;
-
+	private User selectUser;
 	public NetworkManager() {
 		// Read Settings from file (HOST, PORT NUMBER)
 	}
@@ -48,31 +48,51 @@ public class NetworkManager implements Runnable {
 	public void handle(String str) {
 		System.out.println("Handling: " + str);
 		if (str.startsWith("201")) {
-			send("100"); // Lockscreen Connection
-
-			String rec = recive();
-			while (rec == null || !rec.equalsIgnoreCase("200")) {
-				rec = recive();
-			}
-
-			send(Main.settings.getMacAddress());
-		} else if (str.startsWith("401")) { // LOGIN KEY
-
-		} else if (str.startsWith("411")) { // CREATE LOGIN KEY
-
-		} else if (str.startsWith("130")) { // REQUEST TO START A STREAM (TeamViewer)
-
-		} else if (str.startsWith("140")) { // REQUEST TO END A STREAM (TeamViewer)
-
+			send("101"); // Lockscreen Connection
 		} else if (str.startsWith("150")) { // Trying to connect
-
+			if(Main.settings.getMacAddress().equals(str.substring(3, 20)) && 
+				!(Main.users.getUserName(str.substring(20)).equals(null))){
+				send("110");
+			}else{
+				send("ZZZ");
+			}
+			
+		} else if (str.startsWith("401")) { // LOGIN KEY
+			if(Main.users.getUser(selectUser.getName()).getKey().equals(str.substring(3))){
+				send("101");
+			}
+			else if(Main.users.getUser(selectUser.getName()).getKey().equals(null)){
+				send("YYY");
+			}
+			else {
+				send("ZZZ");
+			}
+		} else if (str.startsWith("411")) { // CREATE LOGIN KEY
+			if(!Main.users.getUser(selectUser.getName()).getKey().equals(null)){
+				send("YYY");
+			}
+			else if(Main.users.getUser(selectUser.getName()).setKey(str.substring(3))){
+				send("101");
+			}
+			else{
+				send("ZZZ");
+			}
+		} else if (str.startsWith("970")) { // remove key from user
+			if(Main.users.getUser(selectUser.getName()).setKey(null)){
+				send("101");
+			}
+			else{
+				send("ZZZ");
+			}
+		} else if (str.startsWith("980")) { // return back to locking the screen 
+			send("101"); // TODO add the option to return back to the lockscreen after unlock 
 		} else if (str.startsWith("990")) { // POWER OFF PC
 			Runtime runtime = Runtime.getRuntime();
 			try {
 				runtime.exec("shutdown -t 5");
-				// Sending verfication
+				send("101");// Sending verification
 			} catch (IOException e) {
-				// Sending ERROR
+				send("ZZZ");// Sending ERROR
 				return;
 			}
 			System.exit(0);

@@ -159,10 +159,11 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
         {
 			GameObject hide_out = GameObject.Find("BuildButton");
 			hide_out.SetActive (false);
-			Application.CaptureScreenshot("Um197.png");
+
             // create the name of the next target.
             // the TrackableName of the original, linked ImageTargetBehaviour is extended with a continuous number to ensure unique names
             string targetName = string.Format("{0}-{1}", ImageTargetTemplate.TrackableName, mTargetCounter);
+			//System.IO.File.WriteAllText ("/storage/emulated/0/Um97", targetName);
 
             // generate a new target:
             mTargetBuildingBehaviour.BuildNewTarget(targetName, ImageTargetTemplate.GetSize().x);
@@ -221,6 +222,3 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
     }
     #endregion //PRIVATE_METHODS
 }
-
-
-

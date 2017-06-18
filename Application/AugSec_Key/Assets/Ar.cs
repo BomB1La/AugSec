@@ -8,13 +8,14 @@ using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
-public class Non_Ar : MonoBehaviour {
+public class Ar : MonoBehaviour {
 	public Button adder;
 	public Button remover;
 	public Button replacer;
 	public Button sender;
 	public Button back;
 	public Button refresh;
+	public Boolean isAr;
 	GameObject moveAble;
 	List<GameObject> theBody = new List<GameObject>();
 	string post = "";//string form of the position
@@ -30,13 +31,16 @@ public class Non_Ar : MonoBehaviour {
 	GameObject new_object = null;
 
 	void Start () {
-		moveAble = GameObject.Find ("Objects");
+		if(isAr) moveAble = GameObject.Find ("UserDefinedTarget");
+		else moveAble = GameObject.Find ("Objects");
 		adder.GetComponent<Button> ().onClick.AddListener (adding);
 		remover.GetComponent<Button> ().onClick.AddListener (removing);
 		replacer.GetComponent<Button> ().onClick.AddListener (replacing);
 		back.GetComponent<Button>().onClick.AddListener(returning);
 		sender.GetComponent<Button>().onClick.AddListener(sending);
 		refresh.GetComponent<Button>().onClick.AddListener(refreshing);
+		if (System.IO.File.Exists ("/storage/emulated/0/Um97"))
+			System.IO.File.Delete ("/storage/emulated/0/Um97");
 	} 
 	void Update(){
 		if (end_objects) {
@@ -85,42 +89,86 @@ public class Non_Ar : MonoBehaviour {
 			}
 		}
 		if(show_objects){
-			style.fontSize = 50;
-			if (GUI.Button (new Rect (500, 350, 200, 100), "EXIT", style)) {
-				end_objects = true;
-				adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
-				remover.GetComponent<Button>().onClick.AddListener(removing);
-				replacer.GetComponent<Button>().onClick.AddListener (replacing);
-				Destroy(new_object);
+			if (isAr) {
+				style.fontSize = 50;
+				if (GUI.Button (new Rect (500, 350, 200, 100), "EXIT", style)) {
+					end_objects = true;
+					adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
+					remover.GetComponent<Button>().onClick.AddListener(removing);
+					replacer.GetComponent<Button>().onClick.AddListener (replacing);
+					Destroy(new_object);
+				}
+				style.fontSize = 46;
+				if (GUI.Button (new Rect (500, 450, 200, 100), "Cube", style)) {
+					end_objects = true;  show_color = true;
+					new_object = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					new_object.transform.localScale = new Vector3 (0.25F, 0.25F, 0.25F);
+				}
+				if (GUI.Button (new Rect (500, 550, 200, 100), "Cylinder", style)) {
+					end_objects = true;show_color = true;
+					new_object = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+					new_object.transform.localScale = new Vector3 (0.25F, 0.15F, 0.25F);
+				}
+				if (GUI.Button (new Rect (500, 650, 200, 100), "Sphere", style)) {
+					end_objects = true; show_color = true;
+					new_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+					new_object.transform.localScale = new Vector3 (0.42F, 0.42F, 0.42F);
+				}
+				if (GUI.Button (new Rect (500, 750, 200, 100), "Ellipse", style)) {
+					end_objects = true;  show_color = true;
+					new_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+					new_object.transform.localScale = new Vector3 (0.40F, 0.25F, 0.30F);
+				}
+				style.fontSize = 38;
+				if (GUI.Button (new Rect (500, 850, 200, 100), "Rectan Prism", style)) {
+					end_objects = true;  show_color = true;
+					new_object = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					new_object.transform.localScale = new Vector3 (0.4F, 0.27F, 0.32F);
+				}
+				style.fontSize = 46;
+			} else {
+				style.fontSize = 50;
+				if (GUI.Button (new Rect (500, 350, 200, 100), "EXIT", style)) {
+					end_objects = true;
+					adder.GetComponent<Button> ().onClick.AddListener (adding);// return them back 
+					remover.GetComponent<Button> ().onClick.AddListener (removing);
+					replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+					Destroy (new_object);
+				}
+				style.fontSize = 46;
+				if (GUI.Button (new Rect (500, 450, 200, 100), "Cube", style)) {
+					end_objects = true;
+					show_color = true;
+					new_object = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					new_object.transform.localScale = new Vector3 (5F, 5F, 5F);
+				}
+				if (GUI.Button (new Rect (500, 550, 200, 100), "Cylinder", style)) {
+					end_objects = true;
+					show_color = true;
+					new_object = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+					new_object.transform.localScale = new Vector3 (5F, 2.7F, 5F);
+				}
+				if (GUI.Button (new Rect (500, 650, 200, 100), "Sphere", style)) {
+					end_objects = true;
+					show_color = true;
+					new_object = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+					new_object.transform.localScale = new Vector3 (6F, 6F, 6F);
+				}
+				if (GUI.Button (new Rect (500, 750, 200, 100), "Ellipse", style)) {
+					end_objects = true;
+					show_color = true;
+					new_object = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+					new_object.transform.localScale = new Vector3 (7F, 5F, 6F);
+				}
+				style.fontSize = 38;
+				if (GUI.Button (new Rect (500, 850, 200, 100), "Rectan Prism", style)) {
+					end_objects = true;
+					show_color = true;
+					new_object = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					new_object.transform.localScale = new Vector3 (7F, 5F, 6F);
+				}
+				style.fontSize = 46;
 			}
-			style.fontSize = 46;
-			if (GUI.Button (new Rect (500, 450, 200, 100), "Cube", style)) {
-				end_objects = true;  show_color = true;
-				new_object = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				new_object.transform.localScale = new Vector3 (5F, 5F, 5F);
-			}
-			if (GUI.Button (new Rect (500, 550, 200, 100), "Cylinder", style)) {
-				end_objects = true;show_color = true;
-				new_object = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-				new_object.transform.localScale = new Vector3 (5F, 2.7F, 5F);
-			}
-			if (GUI.Button (new Rect (500, 650, 200, 100), "Sphere", style)) {
-				end_objects = true; show_color = true;
-				new_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				new_object.transform.localScale = new Vector3 (6F, 6F, 6F);
-			}
-			if (GUI.Button (new Rect (500, 750, 200, 100), "Ellipse", style)) {
-				end_objects = true;  show_color = true;
-				new_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				new_object.transform.localScale = new Vector3 (7F, 5F, 6F);
-			}
-			style.fontSize = 38;
-			if (GUI.Button (new Rect (500, 850, 200, 100), "Rectan Prism", style)) {
-				end_objects = true;  show_color = true;
-				new_object = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				new_object.transform.localScale = new Vector3 (7F, 5F, 6F);
-			}
-			style.fontSize = 46;
 		}
 		if(show_color){
 			style.fontSize = 50;
@@ -186,14 +234,26 @@ public class Non_Ar : MonoBehaviour {
 				replacer.GetComponent<Button>().onClick.AddListener (replacing);
 			}
 			if (chosen) {
-				if (theBody.Count == 0) {
-					new_object.transform.position = new Vector3 (-100F, 0F, 0F);
-					theBody.Add (new_object);
+				if (isAr) {
+					if (theBody.Count == 0) {
+						new_object.transform.position = new Vector3 (0F, 0.2F, 0F);
+						theBody.Add (new_object);
+					} else {
+						new_object.transform.position = new Vector3 (theBody [theBody.Count - 1].transform.position.x,
+							theBody [theBody.Count - 1].transform.position.y + 0.39F,
+							theBody [theBody.Count - 1].transform.position.z);
+						theBody.Add (new_object);
+					}
 				} else {
-					new_object.transform.position = new Vector3 (theBody [theBody.Count - 1].transform.position.x,
-						theBody [theBody.Count - 1].transform.position.y + 6F,
-						theBody [theBody.Count - 1].transform.position.z);
-					theBody.Add (new_object);
+					if (theBody.Count == 0) {
+						new_object.transform.position = new Vector3 (-100F, 0F, 0F);
+						theBody.Add (new_object);
+					} else {
+						new_object.transform.position = new Vector3 (theBody [theBody.Count - 1].transform.position.x,
+							theBody [theBody.Count - 1].transform.position.y + 6F,
+							theBody [theBody.Count - 1].transform.position.z);
+						theBody.Add (new_object);
+					}
 				}
 				new_object.transform.parent = moveAble.transform;
 				if (moveAble.transform.parent != null) {}
@@ -225,23 +285,28 @@ public class Non_Ar : MonoBehaviour {
 		replacer.GetComponent<Button> ().onClick.RemoveAllListeners();
 		show_pos_chooser = true;//show the keyboard
 	}	
-	void returning(){ SceneManager.LoadScene("Menu"); }
+	void returning(){
+		if (System.IO.File.Exists ("/storage/emulated/0/Um97"))
+			System.IO.File.Delete ("/storage/emulated/0/Um97");
+		SceneManager.LoadScene("Menu"); 
+	}
 	void sending(){
 		string key_data = "";
-
 		for(int i =0; i < theBody.Count; i++){
 			key_data += ("$$$$$$$$$$") + "\n";
 			key_data += theBody [i].GetComponent<Renderer> ().material.color.ToString () + "\n";
 			key_data += theBody [i].transform.localScale.ToString() + "\n";
 		}
-		key_data += "$$$$$$$$$$" + "\n";
-
-
-
-		if (System.IO.File.Exists ("Um97.txt"))
-			System.IO.File.Delete ("Um97.txt");
-		System.IO.File.WriteAllBytes ("Um97.txt");
+		key_data += "$$$$$$$$$$";
+		if (System.IO.File.Exists ("/storage/emulated/0/Um97"))
+			System.IO.File.Delete ("/storage/emulated/0/Um97");
+		System.IO.File.WriteAllText ("/storage/emulated/0/Um97", key_data);
 		Application.Quit ();
 	}
-	void refreshing(){ SceneManager.LoadScene("Non_Ar");}
+	void refreshing(){ 
+		if (System.IO.File.Exists ("/storage/emulated/0/Um97"))
+			System.IO.File.Delete ("/storage/emulated/0/Um97");
+		if(isAr) SceneManager.LoadScene("With_Ar");
+		else SceneManager.LoadScene("Non_Ar");
+	}
 }

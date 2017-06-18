@@ -7,16 +7,8 @@
                 android:id="@+id/c_key"
                 android:title="Create a key" />
             <item
-                android:id="@+id/s_stream"
-                android:title="PC Stream" />
-            <item
-                android:id="@+id/settings"
-                android:title="Settings" />
-        </menu>
-    </item>
-
-    <item android:title="Power">
-        <menu>
+                android:id="@+id/r_key"
+                android:title="Remove key" />
             <item
                 android:id="@+id/sign_off"
                 android:title="Sign off" />
@@ -25,5 +17,4 @@
                 android:title="Turn PC off" />
         </menu>
     </item>
-
 </menu>

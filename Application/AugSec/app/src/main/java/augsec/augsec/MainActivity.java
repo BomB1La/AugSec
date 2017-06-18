@@ -1,9 +1,13 @@
 package augsec.augsec;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -28,9 +33,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private GoogleApiClient client;
-    public static SettingsManager settings = SettingsManager.getInstance();
-    private String user_name = settings.getUsername();
-    private NetworkManager net = NetworkManager.getInstance();
+    private String user_name = null;
+    private boolean stopper = false;
+    protected OnBackPressedListener onBackPressedListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,113 +77,64 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.c_key) {
+
             Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.augsec.AugSec_Key");
-            if (launchIntent != null) {
-                startActivity(launchIntent);//null pointer check in case package name was not found
-                checker c1 = new checker();
-                c1.start();
-            }
+            if (launchIntent != null) startActivity(launchIntent);//null pointer check in case package name was not found
             else{
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("ERROR:\nCan't load key maker!" )
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
             }
-        } else if (id == R.id.s_stream) {
+            File main_file = new File("/storage/emulated/0/data/Um97");
+            if(main_file.exists()){
+                main_file.delete();
+                Toast toast = Toast.makeText(getApplicationContext(), "asd", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        } else if (id == R.id.r_key) {
 
-        } else if (id == R.id.settings) {
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, SettingsActivity.class);
+        }else if (id == R.id.sign_off) {
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        } else if (id == R.id.sign_off) {
         } else if (id == R.id.off_pc) {
-        }
 
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    protected OnBackPressedListener onBackPressedListener;
-
-
     public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page")
-                .setUrl(Uri.parse("https://www.google.com/"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
+        Thing object = new Thing.Builder().setName("Main Page").setUrl(Uri.parse("https://www.google.com/")).build();
+        return new Action.Builder(Action.TYPE_VIEW).setObject(object).setActionStatus(Action.STATUS_TYPE_COMPLETED).build();
     }
-
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
-
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
+    public interface OnBackPressedListener { void doBack(); }
 
-    public interface OnBackPressedListener {
-        void doBack();
+    public void run() {
+
     }
-
-    class checker implements Runnable {
-        private Thread t;
-        checker() {}
-        public void run() {
-            try {
-                while(true){
-                    if(!isAppRunning(MainActivity.this, "com.augsec.AugSec_Key" ))
-                        break;
-                }
-                File main_file = new File("/storage/emulated/0/data/Um97");
-                if(main_file.exists()){
-
-                }
-                File opt_file = new File("/storage/emulated/0/data/Um197");
-                if(main_file.exists() && opt_file.exists()){
-
-                }
-            }catch (Exception e) {}
-        }
-
-        public void start () {
-            if (t == null) {
-                t = new Thread(this);
-                t.start();
+    private boolean isAppRunning(final Context context, final String packageName) {
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+        if (procInfos != null) {
+            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                if (processInfo.processName.equals(packageName)) return true;
             }
         }
-
-        boolean isAppRunning(final Context context, final String packageName) {
-            final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-            if (procInfos != null)
-            {
-                for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
-                    if (processInfo.processName.equals(packageName)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        return false;
     }
 }
 

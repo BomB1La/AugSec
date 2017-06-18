@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Network;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -21,24 +22,55 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.System.out;
+
 
 public  class LoginActivity extends AppCompatActivity {
+    public static NetworkManager networks = NetworkManager.getInstance();
     private EditText mUsername;
     private String username;
     public int REQUEST_PERMISSIONS = 0;
-    public static SettingsManager settings = SettingsManager.getInstance();
-    public static NetworkManager network = NetworkManager.getInstance();
 
+    /*private static final String HOST = "89.34.99.46";
+    private static final int PORT = 8090;
+    private static Socket socket;
+    private static PrintWriter DOS;
+    private static DataInputStream DIS;*/
 
+    /*public void send(String msg) {
+        out.flush();out.close();
+        try { DOS.write(msg); } catch (Exception e) { e.printStackTrace(); }
+    }*/
+    /*public String receive(){
+        try{
+           // if (DIS.available() == ) return null;
+            String rec = DIS.readUTF();
+            return rec;
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }*/
+    /*private boolean isConnected() { return (socket != null) && socket.isConnected(); }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        networks.setup();
+
+
         setContentView(R.layout.activity_login);
         mUsername = (EditText) findViewById(R.id.username);
         Button mUserSignInButton = (Button) findViewById(R.id.sign_in_button );
@@ -59,31 +91,6 @@ public  class LoginActivity extends AppCompatActivity {
             }
         });
         requestAppPermissions();
-        network.setUp();
-    }
-    public static String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(String.format("%02X:",b));
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {}
-        return "02:00:00:00:00:00";
     }
     private void attemptSignUp() {
         mUsername.setError(null);
@@ -113,9 +120,9 @@ public  class LoginActivity extends AppCompatActivity {
         try {
             Pattern p = Pattern.compile("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
             Matcher m = p.matcher(scanResult.getContents());
-            if (scanResult != null && m.find()) {
-                network.send("301" + "/" + getMacAddr() + "/" + mUsername.getText().toString());
-                if(network.receive().startsWith("YYY")){
+            if (scanResult != null && m.find() && networks.isConnected()) {
+                networks.send("150"  + mUsername.getText().toString());
+                if(networks.recive().startsWith("YYY")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("ERROR:\nSaid user is already made!" )
                     .setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
@@ -126,13 +133,13 @@ public  class LoginActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {}
                     });
-                } else if(network.receive().startsWith("ZZZ")){
+                } else if(networks.recive().startsWith("ZZZ")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("ERROR:\nThere is no said user!" )
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {}
                     });
-                } else if(network.receive().startsWith("101")){
+                } else if(networks.recive().startsWith("101")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Good to go:\nWould you like to make a key?" )
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -144,13 +151,9 @@ public  class LoginActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {}
                     });
                 }
-                //settings.setUsername(username);
                 //Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 //startActivity(i);
                 //finish();
-            } else if (getMacAddr() != "02:00:00:00:00:00"){
-                Toast toast = Toast.makeText(getApplicationContext(), getMacAddr() + "\nIs NOT our MAC address!", Toast.LENGTH_LONG);
-                toast.show();
             } else {
                 Toast toast = Toast.makeText(getApplicationContext(), scanResult.getContents() + "\nIs NOT a MAC address!", Toast.LENGTH_LONG);
                 toast.show();
@@ -161,7 +164,6 @@ public  class LoginActivity extends AppCompatActivity {
         }
 
     }
-
     public void requestAppPermissions() {
         if (ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) +
             ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) +
@@ -193,6 +195,5 @@ public  class LoginActivity extends AppCompatActivity {
             }
         }
     }
-
 }
 

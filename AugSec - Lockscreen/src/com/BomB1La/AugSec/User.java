@@ -24,8 +24,14 @@ public class User {
 		return admin;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public boolean setKey(String key) {
+		try {
+			this.key = key;
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public void setAdmin(boolean admin) {
