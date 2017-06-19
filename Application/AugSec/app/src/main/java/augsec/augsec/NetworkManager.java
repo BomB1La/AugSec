@@ -1,5 +1,7 @@
 package augsec.augsec;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -17,29 +19,55 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 public class NetworkManager implements Runnable {
     private static NetworkManager instance = new NetworkManager();
 
-    private String HOST = "localhost";
+    private String HOST = "89.34.99.46";
     private int PORT = 8090;
-    private static final String TAG = "Test";
 
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private String username = "", key = "", keystatus = "";
+    private boolean usercon = false;
+    private String status_str =  "";
 
     public NetworkManager() {
         // Read Settings from file (HOST, PORT NUMBER)
     }
 
     public void setup() {
-        Log.v(TAG,"setup");
         if (isConnected()) {
             return;
         }
         new Thread(this).start();
     }
 
+    public void setKey(String key){
+        this.key = key;
+    }
+
+    public String getKey(){
+        return key;
+    }
+
+    public String getKeyStatus(){
+        return keystatus;
+    }
+
+    public String getStatus(){ return status_str;}
+
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public boolean getUserConn(){
+        return usercon;
+    }
+
     @Override
     public void run() {
-        Log.v(TAG,"before try");
         try {
             socket = new Socket(HOST, PORT);
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -48,33 +76,61 @@ public class NetworkManager implements Runnable {
             e.printStackTrace();
             return;
         }
-        Log.v(TAG,"Network Manager is running"); //ok, good to go! run
-        //String rec = null;
-        //while (isConnected()) {
-        //    rec = recive();
-        //    if (rec == null) {
-        //        continue;
-        //    }
-        //    handle(rec);
-        //}
+        String rec = null;
+        while (isConnected()) {
+            rec = recive();
+            if (rec == null) {
+                continue;
+            }
+            handle(rec);
+        }
     }
 
-    //public void handle(String str) {
-       // if(str.startsWith("201")){
-        //    send("150"); // Client Connection
-        //}
-    //}
+    public void handle(String str) {
+        if(str.startsWith("201")) {
+            while (getUsername().equals(""));
+            Log.v("NM", "Sending Username");
+            send("150" + getUsername());
+            usercon = true;
+        } else if(str.startsWith("411")){ // There are no users - send key to register as an admin
+            while (getKey().equals(""));
+            Log.v("NM", "Sending Key");
+            send("411" + getKey());
+            keystatus = "Sent";
+        }else if(str.startsWith("401")){ // User found - send login key
+            while (getKey().equals(""));
+            Log.v("NM", "Sending Key");
+            send("401" + getKey());
+            keystatus = "Sent";
+        }else if(str.startsWith("404")){ // User not found
+            Log.v("NM", "User not found");
+            keystatus = "Not found";
+        } else if(str.startsWith("101")){
+            status_str = "ok";
+        } else if(str.startsWith("ZZZ")){
+            status_str = "bad";
+        }else if(str.startsWith("YYY")){
+            status_str = "taken";
+        }
+
+    }
 
     public void disconnect() {
         send("DISCONNECT");
     }
 
     public void send(String msg) {
+        if(!isConnected()) {
+            return;
+        }
         writer.println(msg);
         System.out.println("Sending: " + msg);
     }
 
     public String recive() {
+        if(!isConnected()){
+            return null;
+        }
         try {
             if (!reader.ready()) {
                 return null;

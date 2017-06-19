@@ -2,12 +2,10 @@ package augsec.augsec;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,7 +22,9 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     private String user_name = null;
     private boolean stopper = false;
     protected OnBackPressedListener onBackPressedListener;
+    private static final String TAG = "MyActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,29 +78,59 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.c_key) {
 
+        if (id == R.id.c_key) {
             Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.augsec.AugSec_Key");
-            if (launchIntent != null) startActivity(launchIntent);//null pointer check in case package name was not found
-            else{
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+            }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("ERROR:\nCan't load key maker!" )
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {}
-                });
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {}
+                        });
             }
-            File main_file = new File("/storage/emulated/0/data/Um97");
-            if(main_file.exists()){
-                main_file.delete();
-                Toast toast = Toast.makeText(getApplicationContext(), "asd", Toast.LENGTH_LONG);
+            while(NetworkManager.getInstance().getKeyStatus().equals(""));
+            if(NetworkManager.getInstance().getKeyStatus().equals("Sent")) {
+                Toast toast = Toast.makeText(getApplicationContext(), "all ok!!", Toast.LENGTH_LONG);
+                toast.show();
+            }else {
+                Toast toast = Toast.makeText(getApplicationContext(), "not ok..", Toast.LENGTH_LONG);
                 toast.show();
             }
         } else if (id == R.id.r_key) {
-
-        }else if (id == R.id.sign_off) {
-
+            NetworkManager.getInstance().send("970");
+            while(NetworkManager.getInstance().getStatus().equals(""));
+            if(NetworkManager.getInstance().getStatus().equals("ok")) {
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
+            }else {
+                Toast toast = Toast.makeText(getApplicationContext(), "not ok..", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        } else if (id == R.id.sign_off) {
+            NetworkManager.getInstance().send("980");
+            while(NetworkManager.getInstance().getStatus().equals(""));
+            if(NetworkManager.getInstance().getStatus().equals("ok")) {
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
+            }else {
+                Toast toast = Toast.makeText(getApplicationContext(), "not ok..", Toast.LENGTH_LONG);
+                toast.show();
+            }
         } else if (id == R.id.off_pc) {
-
+            NetworkManager.getInstance().send("990");
+            while(NetworkManager.getInstance().getStatus().equals(""));
+            if(NetworkManager.getInstance().getStatus().equals("ok")) {
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
+            }else {
+                Toast toast = Toast.makeText(getApplicationContext(), "not ok..", Toast.LENGTH_LONG);
+                toast.show();
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -109,22 +140,49 @@ public class MainActivity extends AppCompatActivity
         Thing object = new Thing.Builder().setName("Main Page").setUrl(Uri.parse("https://www.google.com/")).build();
         return new Action.Builder(Action.TYPE_VIEW).setObject(object).setActionStatus(Action.STATUS_TYPE_COMPLETED).build();
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
+
+    public interface OnBackPressedListener { void doBack(); }
+
+
     @Override
     public void onStop() {
         super.onStop();
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
-    public interface OnBackPressedListener { void doBack(); }
+    @Override
 
-    public void run() {
+    public void onStart() {
+        super.onStart();
 
+        File main_file = new File("/storage/emulated/0/Um97");
+        if (!main_file.exists()) {
+            return;
+        }
+        readAndDeleteFile(main_file);
+    }
+
+    public void readAndDeleteFile(File file) {
+        String key = "";
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            key = sb.toString();
+            br.close();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        file.deleteOnExit();
+
+        NetworkManager.getInstance().setKey(key);
     }
     private boolean isAppRunning(final Context context, final String packageName) {
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

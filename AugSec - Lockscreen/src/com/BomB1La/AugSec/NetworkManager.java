@@ -52,7 +52,7 @@ public class NetworkManager implements Runnable {
 		} else if (str.startsWith("150")) { // Trying to connect
 			if(Main.settings.getMacAddress().equals(str.substring(3, 20)) && 
 				!(Main.users.getUserName(str.substring(20)).equals(null))){
-				send("110");
+				send("101");
 			}else{
 				send("ZZZ");
 			}

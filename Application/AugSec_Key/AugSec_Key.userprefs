@@ -1,10 +1,10 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Ar.cs">
     <Files>
-      <File FileName="Assets\Ar.cs" Line="303" Column="30" />
-      <File FileName="Assets\SamplesResources\UserDefinedTargets\Scripts\UDTEventHandler.cs" Line="166" Column="6" />
-      <File FileName="Assets\Menu.cs" Line="16" Column="1" />
+      <File FileName="Assets\Ar.cs" Line="323" Column="17" />
+      <File FileName="Assets\SamplesResources\UserDefinedTargets\Scripts\UDTEventHandler.cs" Line="161" Column="29" />
+      <File FileName="Assets\Menu.cs" Line="21" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

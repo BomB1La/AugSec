@@ -15,6 +15,7 @@ public class Ar : MonoBehaviour {
 	public Button sender;
 	public Button back;
 	public Button refresh;
+	public Button tapper;
 	public Boolean isAr;
 	GameObject moveAble;
 	List<GameObject> theBody = new List<GameObject>();
@@ -29,19 +30,35 @@ public class Ar : MonoBehaviour {
 	show_color = false,
 	end_color = false;
 	GameObject new_object = null;
+	string key_data = "";
 
 	void Start () {
-		if(isAr) moveAble = GameObject.Find ("UserDefinedTarget");
-		else moveAble = GameObject.Find ("Objects");
-		adder.GetComponent<Button> ().onClick.AddListener (adding);
-		remover.GetComponent<Button> ().onClick.AddListener (removing);
-		replacer.GetComponent<Button> ().onClick.AddListener (replacing);
-		back.GetComponent<Button>().onClick.AddListener(returning);
-		sender.GetComponent<Button>().onClick.AddListener(sending);
-		refresh.GetComponent<Button>().onClick.AddListener(refreshing);
+		if (isAr) {
+			moveAble = GameObject.Find ("UserDefinedTarget");
+			back.GetComponent<Button> ().onClick.AddListener (returning);
+			refresh.GetComponent<Button> ().onClick.AddListener (refreshing);
+			tapper.GetComponent<Button> ().onClick.AddListener (add_ar_bnt);
+		}
+		else {
+			moveAble = GameObject.Find ("Objects");
+			adder.GetComponent<Button> ().onClick.AddListener (adding);
+			remover.GetComponent<Button> ().onClick.AddListener (removing);
+			replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+			back.GetComponent<Button> ().onClick.AddListener (returning);
+			sender.GetComponent<Button> ().onClick.AddListener (sending);
+			refresh.GetComponent<Button> ().onClick.AddListener (refreshing);
+		}
 		if (System.IO.File.Exists ("/storage/emulated/0/Um97"))
 			System.IO.File.Delete ("/storage/emulated/0/Um97");
 	} 
+	void add_ar_bnt(){
+		adder.GetComponent<Button> ().onClick.AddListener (adding);
+		remover.GetComponent<Button> ().onClick.AddListener (removing);
+		replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+		back.GetComponent<Button> ().onClick.AddListener (returning);
+		sender.GetComponent<Button> ().onClick.AddListener (sending);
+		refresh.GetComponent<Button> ().onClick.AddListener (refreshing);
+	}
 	void Update(){
 		if (end_objects) {
 			show_objects = false;
@@ -67,6 +84,7 @@ public class Ar : MonoBehaviour {
 				adder.GetComponent<Button> ().onClick.AddListener (adding);// return them back 
 				remover.GetComponent<Button> ().onClick.AddListener (removing);
 				replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+				sender.GetComponent<Button> ().onClick.AddListener(sending);
 			}
 			if (GUI.Button (new Rect (500, 850, 200, 100), "done", style)) {
 				end_pos_chooser = true;
@@ -76,6 +94,8 @@ public class Ar : MonoBehaviour {
 						adder.GetComponent<Button> ().onClick.AddListener (adding);// return them back 
 						remover.GetComponent<Button> ().onClick.AddListener (removing);
 						replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+						sender.GetComponent<Button> ().onClick.AddListener(sending);
+
 					}//do nothing 
 					else {//then add the object 
 						show_replace = true;
@@ -85,6 +105,8 @@ public class Ar : MonoBehaviour {
 					adder.GetComponent<Button> ().onClick.AddListener (adding);// return them back 
 					remover.GetComponent<Button> ().onClick.AddListener (removing);
 					replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+					sender.GetComponent<Button> ().onClick.AddListener(sending);
+
 				}
 			}
 		}
@@ -96,6 +118,7 @@ public class Ar : MonoBehaviour {
 					adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
 					remover.GetComponent<Button>().onClick.AddListener(removing);
 					replacer.GetComponent<Button>().onClick.AddListener (replacing);
+					sender.GetComponent<Button> ().onClick.AddListener(sending);
 					Destroy(new_object);
 				}
 				style.fontSize = 46;
@@ -133,6 +156,7 @@ public class Ar : MonoBehaviour {
 					adder.GetComponent<Button> ().onClick.AddListener (adding);// return them back 
 					remover.GetComponent<Button> ().onClick.AddListener (removing);
 					replacer.GetComponent<Button> ().onClick.AddListener (replacing);
+					sender.GetComponent<Button> ().onClick.AddListener(sending);
 					Destroy (new_object);
 				}
 				style.fontSize = 46;
@@ -177,6 +201,7 @@ public class Ar : MonoBehaviour {
 				adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
 				remover.GetComponent<Button>().onClick.AddListener(removing);
 				replacer.GetComponent<Button>().onClick.AddListener (replacing);
+				sender.GetComponent<Button> ().onClick.AddListener(sending);
 				Destroy(new_object);
 			}
 			style.fontSize = 46;
@@ -232,6 +257,7 @@ public class Ar : MonoBehaviour {
 				adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
 				remover.GetComponent<Button>().onClick.AddListener(removing);
 				replacer.GetComponent<Button>().onClick.AddListener (replacing);
+				sender.GetComponent<Button> ().onClick.AddListener(sending);
 			}
 			if (chosen) {
 				if (isAr) {
@@ -262,6 +288,8 @@ public class Ar : MonoBehaviour {
 				adder.GetComponent<Button>().onClick.AddListener(adding);// return them back 
 				remover.GetComponent<Button>().onClick.AddListener(removing);
 				replacer.GetComponent<Button>().onClick.AddListener (replacing);
+				sender.GetComponent<Button> ().onClick.AddListener(sending);
+
 			}
 		}
 	}
@@ -269,6 +297,7 @@ public class Ar : MonoBehaviour {
 		adder.GetComponent<Button>().onClick.RemoveAllListeners(); // remove the listeners so no interference will occur  
 		remover.GetComponent<Button>().onClick.RemoveAllListeners();
 		replacer.GetComponent<Button> ().onClick.RemoveAllListeners();
+		sender.GetComponent<Button> ().onClick.RemoveAllListeners();
 		show_objects = true;
 	}
 	void removing(){// simple , remove the top piece  
@@ -283,6 +312,7 @@ public class Ar : MonoBehaviour {
 		adder.GetComponent<Button>().onClick.RemoveAllListeners(); // remove the listeners so no interference will occur  
 		remover.GetComponent<Button>().onClick.RemoveAllListeners();
 		replacer.GetComponent<Button> ().onClick.RemoveAllListeners();
+		sender.GetComponent<Button> ().onClick.RemoveAllListeners();
 		show_pos_chooser = true;//show the keyboard
 	}	
 	void returning(){
@@ -291,7 +321,6 @@ public class Ar : MonoBehaviour {
 		SceneManager.LoadScene("Menu"); 
 	}
 	void sending(){
-		string key_data = "";
 		for(int i =0; i < theBody.Count; i++){
 			key_data += ("$$$$$$$$$$") + "\n";
 			key_data += theBody [i].GetComponent<Renderer> ().material.color.ToString () + "\n";
